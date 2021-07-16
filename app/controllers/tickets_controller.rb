@@ -17,5 +17,6 @@ class TicketsController < ApplicationController
     if params[:tags]
       params[:tags].each {|t| update_tag(t) }
     end
+    send_top_tag
   end
 end
