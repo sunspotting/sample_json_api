@@ -1,17 +1,21 @@
 class TicketsController < ApplicationController
+  include TagsHelper
+
   def create
     @ticket = Ticket.create!(ticket_params)
+    process_tags
     render json: @ticket, status: :ok
   end
 
+  private
+
   def ticket_params
-    params.require(:ticket).permit(:user_id, :title, :tags)
-    #params.except(:tags)
+    params.require(:ticket).permit(:user_id, :title)
   end
 
-  def ticket_tags
-    params.require(:ticket).permit(:user_id, :title,:tags)
-    params[:tags]
+  def process_tags
+    if params[:tags]
+      params[:tags].each {|t| update_tag(t) }
+    end
   end
-
 end
