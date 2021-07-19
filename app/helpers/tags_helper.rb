@@ -3,6 +3,7 @@ module TagsHelper
   require "uri"
 
   def update_tag(tag_name)
+    # perhaps this is a good place to validate, the Tag model might be better
     tag = Tag.find_by(name: tag_name)
     if tag
       tag.count += 1
