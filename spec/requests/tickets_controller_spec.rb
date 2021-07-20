@@ -33,53 +33,68 @@ RSpec.describe "Create a Ticket", :type => :request do
   end
 
   # invalid cases without tags --------------------------------------------------------------
-  it "post a ticket with an invalid user_id without tags" do
+  it "post a ticket with an invalid user_id key without tags" do
     post "/tickets", params: { "ticket": { "useX_id": "34", "title": "Hi Joe" } }
     expect(response.content_type).to eq("application/json; charset=utf-8")
-    expect(response).to have_http_status(:unprocessable_entity)
+    json = JSON.parse(response.body)
+    expect(json["error"]).to eq(["User can't be blank","User is not a number"])
   end
 
-  it "post a ticket with an invalid user_id without tags" do
+  it "post a ticket with an invalid user_id value without tags" do
     post "/tickets", params: { "ticket": { "user_id": "cool", "title": "Hi Joe" } }
     expect(response.content_type).to eq("application/json; charset=utf-8")
     expect(response).to have_http_status(:unprocessable_entity)
+    json = JSON.parse(response.body)
+    expect(json["error"]).to eq(["User is not a number"])
   end
 
-  it "post a ticket with an invalid title without tags" do
+  it "post a ticket with an invalid title key without tags" do
     post "/tickets", params: { "ticket": { "user_id": "34", "Xitle": "Hi Joe" } }
     expect(response.content_type).to eq("application/json; charset=utf-8")
     expect(response).to have_http_status(:unprocessable_entity)
+    json = JSON.parse(response.body)
+    expect(json["error"]).to eq(["Title can't be blank"])
   end
 
-  it "post a ticket with an invalid user_id and title without tags" do
+  it "post a ticket with an invalid user_id and title keys without tags" do
     post "/tickets", params: { "ticket": { "useX_id": "34", "Xitle": "Hi Joe" } }
     expect(response.content_type).to eq("application/json; charset=utf-8")
     expect(response).to have_http_status(:unprocessable_entity)
+    json = JSON.parse(response.body)
+    expect(json["error"]).to eq(["User can't be blank", "User is not a number", "Title can't be blank"])
   end
   
   # invalid cases with tags
-  it "post a ticket with an invalid user_id with tags" do
+  it "post a ticket with an invalid user_id key with tags" do
     post "/tickets", params: { "ticket": { "useX_id": "34", "title": "Hi Joe", tags: [1,2,3,4] } }
     expect(response.content_type).to eq("application/json; charset=utf-8")
     expect(response).to have_http_status(:unprocessable_entity)
+    json = JSON.parse(response.body)
+    expect(json["error"]).to eq(["User can't be blank", "User is not a number"])
   end
 
-  it "post a ticket with an invalid title with tags" do
+  it "post a ticket with an invalid title key with tags" do
     post "/tickets", params: { "ticket": { "user_id": "34", "Xitle": "Hi Joe", tags: [1,2,3,4] } }
     expect(response.content_type).to eq("application/json; charset=utf-8")
     expect(response).to have_http_status(:unprocessable_entity)
+    json = JSON.parse(response.body)
+    expect(json["error"]).to eq(["Title can't be blank"])
   end
 
-  it "post a ticket with an invalid user_id and title with tags" do
+  it "post a ticket with an invalid user_id and title keys with tags" do
     post "/tickets", params: { "ticket": { "useX_id": "34", "Xitle": "Hi Joe", tags: [1,2,3,4] } }
     expect(response.content_type).to eq("application/json; charset=utf-8")
     expect(response).to have_http_status(:unprocessable_entity)
+    json = JSON.parse(response.body)
+    expect(json["error"]).to eq(["User can't be blank", "User is not a number", "Title can't be blank"])
   end
 
-  it "post a ticket with a valid ticket with too many tags" do
+  it "post a valid ticket with too many tags" do
     post "/tickets", params: { "ticket": { "user_id": "34", "title": "Hi Joe", tags: [1,2,3,4,5,6] } }
     expect(response.content_type).to eq("application/json; charset=utf-8")
     expect(response).to have_http_status(:unprocessable_entity)
+    json = JSON.parse(response.body)
+    expect(json["error"]).to eq("More than 5 tags submitted.")
   end
 end
 
